@@ -1,0 +1,28 @@
+<h1>Editing place</h1>
+
+<% form_for(@place) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :lat %><br />
+    <%= f.text_field :lat %>
+  </p>
+  <p>
+    <%= f.label :lon %><br />
+    <%= f.text_field :lon %>
+  </p>
+  <p>
+    <%= f.label :modes %><br />
+    <%= f.text_field :modes %>
+  </p>
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @place %> |
+<%= link_to 'Back', places_path %>

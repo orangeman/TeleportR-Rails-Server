@@ -1,0 +1,23 @@
+<p>
+  <b>Name:</b>
+  <%=h @place.name %>
+</p>
+
+<p>
+  <b>Lat:</b>
+  <%=h @place.lat %>
+</p>
+
+<p>
+  <b>Lon:</b>
+  <%=h @place.lon %>
+</p>
+
+<p>
+  <b>Modes:</b>
+  <%=h @place.modes %>
+</p>
+
+
+<%= link_to 'Edit', edit_place_path(@place) %> |
+<%= link_to 'Back', places_path %>

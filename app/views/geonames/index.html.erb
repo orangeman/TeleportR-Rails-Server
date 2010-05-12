@@ -1,0 +1,34 @@
+<h1>Listing geonames</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Geoname</th>
+    <th>Feature code</th>
+    <th>Country code</th>
+    <th>Population</th>
+    <th>Timezone</th>
+    <th>Admin1</th>
+    <th>Admin2</th>
+    <th>Admin3</th>
+    <th>Admin4</th>
+  </tr>
+
+<% @geonames.each do |geoname| %>
+  <tr>
+    <td><%=h geoname.name %></td>
+    <td><%=h geoname.geoname_id %></td>
+    <td><%=h geoname.feature_code %></td>
+    <td><%=h geoname.country_code %></td>
+    <td><%=h geoname.population %></td>
+    <td><%=h geoname.timezone %></td>
+    <td><%=h geoname.admin1 %></td>
+    <td><%=h geoname.admin2 %></td>
+    <td><%=h geoname.admin3 %></td>
+    <td><%=h geoname.admin4 %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+

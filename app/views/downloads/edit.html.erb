@@ -1,0 +1,16 @@
+<h1>Editing download</h1>
+
+<% form_for(@download) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @download %> |
+<%= link_to 'Back', downloads_path %>

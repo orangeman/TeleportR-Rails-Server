@@ -1,0 +1,51 @@
+<p>
+  <b>Name:</b>
+  <%=h @state.name %>
+</p>
+
+<p>
+  <b>Country:</b>
+  <a href="/countries/<%=h @state.country_iso %>"> <%=h @state.country_iso %> </a>
+</p>
+
+<p>
+  <b>Cities:</b>
+  <a href="<%= @state.id %>/cities"> <%=h @state.cities.size %> </a>
+</p>
+
+<p>
+  <b>States:</b>
+  <a href="<%= @state.id %>/states"> <%=h @state.states.size %> </a>
+</p>
+
+<p>
+  <b>Stations:</b>
+  <a href="<%= @state.id %>/stations"> 
+  <%=h @state.places.find(:all, :conditions => "modes!=64").size.to_s %> </a> 
+  <a href="<%= @state.id %>/stations.kml"><img src="/images/kml.jpeg"> </a>
+</p>
+
+<p>
+  <b>Streets:</b>
+  <a href="<%= @state.id %>/streets"> 
+  <%=h @state.places.find(:all, :conditions => "modes=64").size.to_s %> </a>
+</p>
+
+<p>
+  <b>Population:</b>
+  <%=h @state.population %>
+</p>
+
+<p>
+  <b>Timezone:</b>
+  <%=h @state.timezone %>
+</p>
+
+<p>
+  <b>GeonameID1:</b>
+  <%=h @state.id %>
+</p>
+
+
+
+

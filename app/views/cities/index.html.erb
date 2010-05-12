@@ -1,0 +1,24 @@
+<h1>Listing Cities (<%= params[:city_id]%>)</h1>
+
+<table>
+  <tr>
+    <th>Country</th>
+    <th>Name</th>
+    <th>Population</th>
+    <th>Timezone</th>
+    <th>GeonameID</th>
+  </tr>
+
+<% @cities.each do |city| %>
+  <tr>
+    <td><a href="/countries/<%=h city.country_iso %>"> <%=h city.country_iso %> </a></td>
+	<td><a href="cities/<%=h city.id %>"> <%=h city.name %> </a></td>
+    <td><%=h city.population %></td>
+    <td><%=h city.timezone %></td>
+    <td><%=h city.id %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+

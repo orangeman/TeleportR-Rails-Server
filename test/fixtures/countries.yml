@@ -1,0 +1,23 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  iso: MyString
+  name: MyString
+  capital: MyString
+  population: 1
+  area: 1
+  continent: MyString
+  tld: MyString
+  currency: MyString
+  currency_code: MyString
+
+two:
+  iso: MyString
+  name: MyString
+  capital: MyString
+  population: 1
+  area: 1
+  continent: MyString
+  tld: MyString
+  currency: MyString
+  currency_code: MyString

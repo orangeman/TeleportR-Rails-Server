@@ -1,0 +1,53 @@
+<h1> 
+	<% if params[:download_id] %>
+		Download: <%=h Download.find_by_id(params[:download_id]).name %>
+	<% end %>
+</h1>
+
+<table>
+  <tr>
+    <th>Modes</th>
+    <th width="200">Name</th>
+    <th>LatLon</th>
+  </tr>
+
+<% @places.each do |place| %>
+  <tr>
+    <td>
+    	<% if place.modes&$STREET != 0 %>
+    		<img src="/images/a_street.png"> 
+    	<% end %>
+    	<% if place.modes&$SBAHN != 0 %>
+    		<img src="/images/a_sbahn.png"> 
+    	<% end %>
+    	<% if place.modes&$UBAHN != 0 %>
+    		<img src="/images/a_ubahn.png"> 
+    	<% end %>
+    	<% if place.modes&$TRAM != 0 %>
+    		<img src="/images/a_tram.png"> 
+    	<% end %>
+    	<% if place.modes&$BUS != 0 %>
+    		<img src="/images/a_bus.png"> 
+    	<% end %>
+    	<% if place.modes&$ZUG != 0 %>
+    		<img src="/images/a_zug.jpg"> 
+    	<% end %>
+    	<% if place.modes&$BOOT != 0 %>
+    		<img src="/images/ship.jpeg"> 
+    	<% end %>
+    </td>
+    
+    <td>
+    	<%=h place.name %>
+    </td>
+    
+    <td>
+    	<% latlon = place.latlon.match /(\d+\.\d+),(\d+\.\d+)/ %>
+    	<%=h latlon[2] %> <br/> <%=h latlon[1] %>
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+

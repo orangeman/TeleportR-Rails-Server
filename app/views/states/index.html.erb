@@ -1,0 +1,24 @@
+<h1>Listing states (<%= params[:country_id]%>)</h1>
+
+<table>
+  <tr>
+    <th>Country</th>
+    <th>Name</th>
+    <th>Population</th>
+    <th>Timezone</th>
+    <th>GeonameID</th>
+  </tr>
+
+<% @states.each do |state| %>
+  <tr>
+    <td><a href="/countries/<%=h state.country_iso %>"> <%=h state.country_iso %> </a></td>
+	<td><a href="states/<%=h state.id %>"> <%=h state.name %> </a></td>
+    <td><%=h state.population %></td>
+    <td><%=h state.timezone %></td>
+    <td><%=h state.id %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+

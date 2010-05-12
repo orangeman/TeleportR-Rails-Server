@@ -1,0 +1,51 @@
+<h1>New geoname</h1>
+
+<% form_for(@geoname) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :geoname_id %><br />
+    <%= f.text_field :geoname_id %>
+  </p>
+  <p>
+    <%= f.label :feature_code %><br />
+    <%= f.text_field :feature_code %>
+  </p>
+  <p>
+    <%= f.label :country_code %><br />
+    <%= f.text_field :country_code %>
+  </p>
+  <p>
+    <%= f.label :population %><br />
+    <%= f.text_field :population %>
+  </p>
+  <p>
+    <%= f.label :timezone %><br />
+    <%= f.text_field :timezone %>
+  </p>
+  <p>
+    <%= f.label :admin1 %><br />
+    <%= f.text_field :admin1 %>
+  </p>
+  <p>
+    <%= f.label :admin2 %><br />
+    <%= f.text_field :admin2 %>
+  </p>
+  <p>
+    <%= f.label :admin3 %><br />
+    <%= f.text_field :admin3 %>
+  </p>
+  <p>
+    <%= f.label :admin4 %><br />
+    <%= f.text_field :admin4 %>
+  </p>
+  <p>
+    <%= f.submit 'Create' %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', geonames_path %>

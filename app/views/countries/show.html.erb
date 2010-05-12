@@ -1,0 +1,58 @@
+<p>
+  <b>Name:</b>
+  <%=h @country.name %>
+</p>
+
+<p>
+  <b>Iso:</b>
+  <%=h @country.iso %>
+</p>
+
+<p>
+  <b>Tld:</b>
+  <%=h @country.tld %>
+</p>
+
+<p>
+  <b>States:</b>
+  <%= link_to @country.states.size.to_s, country_path(@country)+"/states" %>
+</p>
+
+<p>
+  <b>Cities:</b>
+  <%= link_to @country.cities.size.to_s, country_path(@country)+"/cities" %>
+</p>
+
+<p>
+  <b>Area:</b>
+  <%=h @country.area %> 
+</p>
+
+<p>
+  <b>Capital:</b>
+  <%=h @country.capital %>
+</p>
+
+<p>
+  <b>Continent:</b>
+  <%=h @country.continent %>
+</p>
+
+
+<p>
+  <b>Currency:</b>
+  <%=h @country.currency %>
+</p>
+
+<p>
+  <b>Currency code:</b>
+  <%=h @country.currency_code %>
+</p>
+
+<p>
+  <b>Population:</b>
+  <%=h @country.population %>
+</p>
+
+<%= link_to 'Edit', edit_country_path(@country) %> |
+<%= link_to 'Back', countries_path %>

@@ -1,0 +1,53 @@
+<p>
+  <b>Name:</b>
+  <%=h @geoname.name %>
+</p>
+
+<p>
+  <b>Geoname:</b>
+  <%=h @geoname.geoname_id %>
+</p>
+
+<p>
+  <b>Feature code:</b>
+  <%=h @geoname.feature_code %>
+</p>
+
+<p>
+  <b>Country code:</b>
+  <%=h @geoname.country_code %>
+</p>
+
+<p>
+  <b>Population:</b>
+  <%=h @geoname.population %>
+</p>
+
+<p>
+  <b>Timezone:</b>
+  <%=h @geoname.timezone %>
+</p>
+
+<p>
+  <b>Admin1:</b>
+  <%=h @geoname.admin1 %>
+</p>
+
+<p>
+  <b>Admin2:</b>
+  <%=h @geoname.admin2 %>
+</p>
+
+<p>
+  <b>Admin3:</b>
+  <%=h @geoname.admin3 %>
+</p>
+
+<p>
+  <b>Admin4:</b>
+  <%=h @geoname.admin4 %>
+</p>
+
+
+<%= link_to 'Edit', edit_geoname_path(@geoname) %> |
+<%= link_to 'Back', geonames_path %>

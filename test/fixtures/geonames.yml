@@ -1,0 +1,25 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: MyString
+  geoname_id: 1
+  feature_code: MyString
+  country_code: MyString
+  population: 1
+  timezone: MyString
+  admin1: MyString
+  admin2: MyString
+  admin3: MyString
+  admin4: MyString
+
+two:
+  name: MyString
+  geoname_id: 1
+  feature_code: MyString
+  country_code: MyString
+  population: 1
+  timezone: MyString
+  admin1: MyString
+  admin2: MyString
+  admin3: MyString
+  admin4: MyString

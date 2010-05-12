@@ -1,0 +1,36 @@
+<p>
+  <b>Name:</b>
+  <%=h @city.name %>
+</p>
+
+<p>
+  <b>Country:</b>
+  <%= link_to @city.country_iso, country_path(@city.country) %>
+</p>
+
+<p>
+  <b>State:</b>
+  <% if @city.state %>
+  	<%= link_to @city.state.name, country_state_path(@city.country, @city.state) %>
+  <% else %>
+  	<%= @city.state_id %>
+  <% end %>
+</p>
+
+<p>
+  <b>Population:</b>
+  <%=h @city.population %>
+</p>
+
+<p>
+  <b>Timezone:</b>
+  <%=h @city.timezone %>
+</p>
+
+<p>
+  <b>GeonameID1:</b>
+  <%=h @city.id %>
+</p>
+
+
+
