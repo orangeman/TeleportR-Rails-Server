@@ -1,2 +1,3 @@
 class City < Geoname 
 end
+

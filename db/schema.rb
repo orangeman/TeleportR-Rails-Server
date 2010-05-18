@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100510230615) do
+ActiveRecord::Schema.define(:version => 20100514180918) do
 
   create_table "countries", :id => false, :force => true do |t|
     t.string   "iso"
@@ -25,18 +25,8 @@ ActiveRecord::Schema.define(:version => 20100510230615) do
     t.datetime "updated_at"
   end
 
-  create_table "downloads", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "downloads_places", :force => true do |t|
-    t.integer  "download_id"
-    t.integer  "place_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+# Could not dump table "downloads" because of following StandardError
+#   Unknown type 'geometry' for column 'latlon'
 
   create_table "geometry_columns", :id => false, :force => true do |t|
     t.string  "f_table_catalog",   :limit => 256, :null => false

@@ -4,10 +4,9 @@ require "sqlite3"
 
 
 namespace :import do
-namespace :geonames do
   
-  desc "download states+cities and import to postgis"
-  task :states => :environment do
+  desc "download and import states/cities of one country"
+  task :geonames => :environment do
   	
   	puts
   	country = ENV["country"]
@@ -43,7 +42,7 @@ namespace :geonames do
 		  		n.population = g[14]
 		  		n.country_iso = country
 			  	n.latlon = Place.find_by_sql("SELECT ST_GeomFromText(
-			  				'POINT(#{g[4]} #{g[5]})', 4326)")[0].st_geomfromtext
+			  			   'POINT(#{g[5]} #{g[4]})', 4326)")[0].st_geomfromtext
 			  	geonames << n
 		  	end
 		end
@@ -96,11 +95,12 @@ namespace :geonames do
 		puts
 	
   end
-	
-	
+
+
+namespace :geonames do
 	
   desc "download countries and import to postgis"
-  task :counttries => :environment do
+  task :countries => :environment do
 	
 		`rm /home/orangeman/geonames/countryInfo.txt`
 		`wget http://download.geonames.org/export/dump/countryInfo.txt \
@@ -174,8 +174,8 @@ namespace :geonames do
 		  		n.population = g[14]
 		  		n.country_iso = g[8]
 			  	n.latlon = Place.find_by_sql("SELECT ST_GeomFromText(
-			  				'POINT(#{g[4]} #{g[5]})', 4326)")[0].st_geomfromtext
-			  	n.save
+			  				'POINT(#{g[5]} #{g[4]})', 4326)")[0].st_geomfromtext
+			  	n.save unless City.exists? n.id
 		  	end
 		end
 

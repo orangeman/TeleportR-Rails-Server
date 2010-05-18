@@ -5,3 +5,4 @@ class State < Geoname
 	has_many :places
 
 end
+

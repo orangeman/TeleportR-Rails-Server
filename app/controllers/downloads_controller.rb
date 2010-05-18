@@ -2,11 +2,21 @@ class DownloadsController < ApplicationController
   # GET /downloads
   # GET /downloads.xml
   def index
-    @downloads = Download.all
+  
+  	if params[:lat] && params[:lon]
+  	  @downloads = Download.find_by_sql "SELECT title, file, size, radius, ST_AsText(latlon) AS latlon 
+    							 		 FROM downloads 
+    							 		 WHERE ST_DWithin(ST_GeomFromEWKT('SRID=4326; POINT
+    							 			 (#{params[:lon]} #{params[:lat]})'), latlon, 1.5)
+    							 		 ;"
+  	else
+      @downloads = Download.all
+	end
 
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @downloads }
+	  format.json  { render :json => @downloads }
     end
   end
 

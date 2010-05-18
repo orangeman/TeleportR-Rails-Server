@@ -1,22 +1,19 @@
 class Place < ActiveRecord::Base
 
-	belongs_to :state
-	has_and_belongs_to_many :downloads
+  belongs_to :state
+
 	
-	
-	
-  def distance_to(other)
-    ((lat - other.lat)**2 + (lng - other.lng)**2) / 10000000
+  def dist_to(another)
+    Place.find_by_sql("SELECT ST_Distance('#{latlon}', '#{another.latlon}')")[0].st_distance.to_f*200 #km
   end
   
   
   def hash
-    [name, modes, city_id].hash
+    [name, modes].hash
   end
 
   def eql?(other)
-    [name, modes, city_id].eql?([other.name, other.modes, other.city_id])
+    [name, modes].eql?([other.name, other.modes])
   end
-
 
 end

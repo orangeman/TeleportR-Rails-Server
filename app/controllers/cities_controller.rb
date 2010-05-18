@@ -2,15 +2,16 @@ class CitiesController < ApplicationController
   # GET /cities
   # GET /cities.xml
   def index
-  	if params[:state_id]
-  		@cities = City.find :all, :conditions => {:state_id => params[:state_id]}, 
-  									:order => "population DESC", :limit => 2342
-  	elsif params[:country_id]
-  		@cities = City.find :all, :conditions => {:country_iso => params[:country_id]}, 
-  									:order => "population DESC", :limit => 2342					
-  	else
-	    @cities = City.find :all, :order => "population DESC", :limit => 2342
-	end
+  
+	 @cities = City.find_by_sql "SELECT id, name, country_iso, population, timezone, ST_AsKML(latlon) AS latlon
+    							 FROM geonames 
+    							 WHERE type='City'
+    							 #{if params[:state_id]
+    							  	"AND state_id="+params[:state_id]
+    							   elsif params[:country_id]
+    							  	"AND country_iso='"+params[:country_id].upcase+"'"
+    							   end}
+    							 ORDER BY population DESC LIMIT 2342;"
 
     respond_to do |format|
       format.html # index.html.erb

@@ -7,6 +7,7 @@
     <th>Population</th>
     <th>Timezone</th>
     <th>GeonameID</th>
+    <th>LatLon</th>
   </tr>
 
 <% @cities.each do |city| %>
@@ -16,6 +17,12 @@
     <td><%=h city.population %></td>
     <td><%=h city.timezone %></td>
     <td><%=h city.id %></td>
+    <td>
+    	<% latlon = city.latlon.match /(\d+\.*\d*),(\d+\.*\d*)/ %>
+    	<% if latlon %>
+    	<%=h latlon[2] %> <br/> <%=h latlon[1] %>
+    	<% end %>
+    </td>
   </tr>
 <% end %>
 </table>

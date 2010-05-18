@@ -1,5 +1,5 @@
 ActionController::Routing::Routes.draw do |map|
-  
+ 
   map.root :controller => "countries"
   
   map.resources :countries do |country|
@@ -21,14 +21,11 @@ ActionController::Routing::Routes.draw do |map|
   end
  
   map.resources :states
- 
   map.resources :cities
 
   map.connect "stations/nearby.:format", :controller => 'places', :action => 'nearby'
 
-  map.resources :downloads do |d|
-  	d.resources :places
-  end
+  map.connect "downloads.:format", :controller => 'downloads', :action => 'index'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

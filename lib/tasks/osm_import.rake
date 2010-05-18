@@ -170,6 +170,7 @@ SQL
 				p.modes |= SBAHN
 				p.name.gsub! "S+U ",""
 			end
+			p.name.gsub!("+", " ").strip!
 			#puts "name: "+p.name
 		
 		

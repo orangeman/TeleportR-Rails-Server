@@ -14,8 +14,10 @@ class PlacesController < ApplicationController
     @places = Place.find_by_sql "SELECT name, modes, ST_AsKML(latlon) AS latlon
     							 FROM places 
     							 WHERE ST_DWithin(ST_GeomFromEWKT('SRID=4326;POINT
-    							 (#{params[:lon]} #{params[:lat]})'), latlon, 0.134)
-    							 AND modes!=64;"
+    							 (#{params[:lon]} #{params[:lat]})'), latlon, 0.1)
+    							 AND modes!=64
+    							 ORDER BY name;"
+    @places.uniq!
 
     respond_to do |format|
       format.html { render :index }
