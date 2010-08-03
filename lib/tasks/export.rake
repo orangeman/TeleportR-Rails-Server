@@ -25,37 +25,81 @@ namespace :export do
   desc "download osm data and import to postgis (streets+stations)"
   task :all => [:stations, :streets]
   
-  desc "generate one download with stations file for each state"
+
+  desc "generate one download with stations for each city"
   task :stations => :environment do
   	
   	puts
   	Download.delete_all "title like 'Haltestellen_%'"
+
+	cities = City.find :all, :conditions => "population > 0", 
+  							 :order => "population DESC",
+  							 :limit => 2342
   	
-  	states = State.find :all, :conditions => "state_id is null"
+  	puts
+  	puts "found "+cities.size.to_s+" cities"
+  	cities.uniq!
+  	puts "uniq: "+cities.size.to_s
+  	puts
   	
-  	states.each do |s|
-  	
+  	cities.each_with_index do |c, i|
+  		
   		stations = Place.find_by_sql "SELECT name, modes, ST_AsText(latlon) AS latlon
-    							 		FROM places 
-    							 		WHERE state_id=#{s.id} AND modes!=64
-    							 		ORDER BY name;"
+    							 	  FROM places 
+    							   	  WHERE ST_DWithin('#{c.latlon}', latlon, 1.2)
+    							 	  AND modes!=64
+    							 	  ORDER BY name;"
  		next if stations.size == 0
-  		stations.uniq!
+ 		
+ 		# separation
+ 		neighbours = Download.find_by_sql "SELECT * FROM downloads
+ 							  			   WHERE ST_DWithin('#{c.latlon}', latlon, 0.5)
+ 							  			   AND title like 'Haltestellen_%';"
+  		if neighbours.size > 0
+  			puts "    -- "+c.name+" is too close to already existent street downloads"
+			puts
+		end
+ 		
+ 		stations.uniq! # Berlin/Brandenburg!
  		
   		d = Download.new
-  		d.title = "Haltestellen "+s.name.split(" ").last
+  		d.title = "Haltestellen "+c.name
 		d.file = d.title.gsub(" ", "_")+".db"
 		d.size = stations.size
-		d.latlon = s.latlon
-		d.radius = 300
-
-		puts " -- generating "+d.title+"  ("+d.size.to_s+") ..."
+		d.latlon = c.latlon
+		d.radius = 120
+		
+  		puts " -- generating "+d.title+"  ("+d.size.to_s+") ..."
   		createSqliteFile d.file, stations
 		d.save
   		puts "    --> Done."
-  		puts
-		
+		puts
   	end
+
+  	
+  	#states = State.find :all, :conditions => "state_id is null"
+  	
+  	#states.each do |s|
+  		#stations = Place.find_by_sql "SELECT name, modes, ST_AsText(latlon) AS latlon
+    	#						 		FROM places 
+    	#						 		WHERE state_id=#{s.id} AND modes!=64
+    	#						 		ORDER BY name;"
+ 		#next if stations.size == 0
+  		#stations.uniq!
+  		#d = Download.new
+  		#d.title = "Haltestellen "+s.name.split(" ").last
+		#d.file = d.title.gsub(" ", "_")+".db"
+		#d.size = stations.size
+		#d.latlon = s.latlon
+		#d.radius = 300
+
+		#puts " -- generating "+d.title+"  ("+d.size.to_s+") ..."
+  		#createSqliteFile d.file, stations
+		#d.save
+  		#puts "    --> Done."
+  		#puts
+		
+  	#end
   end
 
   desc "generate one download with streets for each city"
@@ -88,7 +132,8 @@ namespace :export do
  							  			   WHERE ST_DWithin('#{c.latlon}', latlon, 0.3)
  							  			   AND title like 'Straßen_%';"
   		if neighbours.size > 0
-  			puts c.name+" is too close to already existent street downloads"
+  			puts "    -- "+c.name+" is too close to already existent street downloads"
+			puts
   			next
 		end
  		

@@ -30,7 +30,12 @@
 
 <p>
   <b>Capital:</b>
-  <%=h @country.capital %>
+  <% c = City.find_by_name @country.capital %>
+  <% if c %>
+  	<%= link_to c.name, city_path(c) %>
+  <% else %>
+    <%=h @country.capital %>
+  <% end %>
 </p>
 
 <p>

@@ -1,0 +1,18 @@
+<p>
+  <b>Title:</b>
+  <%=h @plugin.title %>
+</p>
+
+<p>
+  <b>Url:</b>
+  <%=h @plugin.url %>
+</p>
+
+<p>
+  <b>Area:</b>
+  <%=h @plugin.area %>
+</p>
+
+
+<%= link_to 'Edit', edit_plugin_path(@plugin) %> |
+<%= link_to 'Back', plugins_path %>

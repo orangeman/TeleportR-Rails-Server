@@ -1,6 +1,9 @@
 <p>
-  <b>Name:</b>
-  <%=h @state.name %>
+  <h2><b>Name:</b>
+    <%=h @state.name %></h2>
+      <% @state.translations.select{|t| t.iso != ""}.each do |t| %>
+  		<%= t.name %> (<%= t.iso %>), 
+  	  <% end %>
 </p>
 
 <p>
