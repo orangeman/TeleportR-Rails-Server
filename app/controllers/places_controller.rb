@@ -14,7 +14,10 @@ class PlacesController < ApplicationController
     @places = Place.find_by_sql "SELECT name, modes, ST_AsKML(latlon) AS latlon
     							 FROM places 
     							 WHERE ST_DWithin(ST_GeomFromEWKT('SRID=4326;POINT
-    							 (#{params[:lon]} #{params[:lat]})'), latlon, 0.1)
+    							 (#{params[:lon]} #{params[:lat]})'), latlon, 0.7)
+							 AND ST_Distance(ST_Transform(latlon, 32632),
+							   ST_Transform(ST_GeomFromEWKT('SRID=4326;POINT
+                                                             (#{params[:lon]} #{params[:lat]})'), 32632)) < 40000 
     							 AND modes!=64
     							 ORDER BY name;"
     @places.uniq!
@@ -55,7 +58,8 @@ class PlacesController < ApplicationController
 
     respond_to do |format|
       format.html { render :index }
-      format.xml  { render :xml => @places }
+      #format.xml  { render :xml => @places }
+      format.xml  { render :index, :layout => false }
       format.kml  { render :index, :layout => false } 
     end
   end
