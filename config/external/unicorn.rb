@@ -10,8 +10,8 @@
 
 # Use at least one worker per core if you're on a dedicated server,
 # more will usually help for _short_ waits on databases/caches.
-worker_processes 4
-app_name = "contesta"
+worker_processes 2
+app_name = "teleportr"
 app_base_dir = "/var/www/#{app_name}"
 
 
@@ -22,7 +22,6 @@ working_directory "#{app_base_dir}/current" # available in 0.94.0+
 # listen on both a Unix domain socket and a TCP port,
 # we use a shorter backlog for quicker failover when busy
 listen "#{app_base_dir}/current/tmp/#{app_name}.sock", :backlog => 64
-listen 9090, :tcp_nopush => true
 
 # nuke workers after 30 seconds instead of 60 seconds (the default)
 timeout 30
