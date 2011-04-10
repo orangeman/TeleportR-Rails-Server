@@ -3,6 +3,8 @@ gem "rails", "2.3.3"
 gem "sqlite3-ruby", :require => "sqlite3"
 
 gem "pg"
+gem "capistrano"
+gem "capistrano-ext"
 
 
 
