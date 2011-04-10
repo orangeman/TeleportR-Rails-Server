@@ -16,7 +16,7 @@ group :development do
   # bundler requires these gems in development
   # gem "rails-footnotes"
 end
-group :development do
+group :production do
   gem "unicorn"
 end
 
