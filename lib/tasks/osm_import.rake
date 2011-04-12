@@ -12,14 +12,21 @@ ZUG = 2**4
 BOOT = 2**5
 STREET = 2**6
 
+postgis_database_path="#{RAILS_ROOT}/db/pg-8.4-postgis-1.5"
+osmosis_database_path="#{RAILS_ROOT}/db/osmosis-0.35"
+osmosis_binary="/mnt/may-old-root/home/orangeman/osm/osmosis-0.35/bin/osmosis"
+downloadpath="#{RAILS_ROOT}/tmp/"
+
+osm_db = osm
+osm_user = osm
+
+
 namespace :import do
 namespace :osm do
 
 
   desc "download osm data and import to postgis (streets+stations)"
   task :all => [:streets, :stations]
-  
-
 
   
   desc "download streets and import to postgis"
@@ -36,14 +43,14 @@ namespace :osm do
 	`dropdb osm_#{state} -U osm`
 	`createdb -U osm osm_#{state}`
 	`createlang -U osm plpgsql osm_#{state}`
-	`psql -U osm -d osm_#{state} -f /usr/share/postgresql-8.3-postgis/lwpostgis.sql`
-	`psql -U osm -d osm_#{state} -f /usr/share/postgresql-8.3-postgis/spatial_ref_sys.sql`
-	`psql -U osm -d osm_#{state} -f ~orangeman/osm/osmosis-0.35/script/pgsql_simple_schema_0.6.sql`
+	`psql -U osm -d osm_#{state} -f #{postgis_path}/postgis.sql`
+	`psql -U osm -d osm_#{state} -f #{postgis_path}/spatial_ref_sys.sql`
+	`psql -U osm -d osm_#{state} -f #{osmosis_database_path}/pgsql_simple_schema_0.6.sql`
 	
 	`wget http://download.geofabrik.de/osm/europe/germany/#{state}.osm.bz2 \
-		-O ~orangeman/osm/#{state}.osm.bz2`
-	`/home/orangeman/osm/osmosis-0.35/bin/osmosis \
-		--read-xml ~orangeman/osm/#{state}.osm.bz2 \
+		-O #{downloadpath}/#{state}.osm.bz2`
+	`#{osmosis_binary} \
+		--read-xml #{downloadpath}/#{state}.osm.bz2 \
 		--write-pgsql user="osm" database="osm_#{state}" password="osm"`
 	
 	
