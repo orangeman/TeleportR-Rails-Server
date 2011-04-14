@@ -17,8 +17,8 @@ osmosis_database_path="#{RAILS_ROOT}/db/osmosis-0.35"
 osmosis_binary="/mnt/may-old-root/home/orangeman/osm/osmosis-0.35/bin/osmosis"
 downloadpath="#{RAILS_ROOT}/tmp/"
 
-osm_db = osm
-osm_user = osm
+osm_db = "osm"
+osm_user = "osm"
 
 
 namespace :import do

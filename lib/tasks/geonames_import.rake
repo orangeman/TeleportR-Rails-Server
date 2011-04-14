@@ -2,12 +2,14 @@ require "rubygems"
 require "pg"
 require "sqlite3"
 
+temppath = "#{RAILS_ROOT}/tmp/geonames"
 
 namespace :import do
   
   desc "download and import states/cities of one country"
   task :geonames => :environment do
-  	
+        # warning nach dem naechsten deploy ist alles wecj	
+	`mkdir #{temppath}`
   	puts
   	country = ENV["country"]
   	if not country
@@ -16,15 +18,15 @@ namespace :import do
   		break
   	end
 	
-		`rm /home/orangeman/geonames/#{country}.txt`
-		`rm /home/orangeman/geonames/readme.txt`
+		`rm #{temppath}/#{country}.txt`
+		`rm #{temppath}/readme.txt`
 		`wget http://download.geonames.org/export/dump/#{country}.zip \
-							-O ~orangeman/geonames/#{country}.zip`
-		`unzip -d ~orangeman/geonames/ ~orangeman/geonames/#{country}.zip`
+							-O #{temppath}/#{country}.zip`
+		`unzip -d #{temppath} #{temppath}/#{country}.zip`
 		
 		puts "-- reading states / cities.. "
 		geonames = []
-		File.open("/home/orangeman/geonames/#{country}.txt", "r").each do |line|
+		File.open("#{temppath}/#{country}.txt", "r").each do |line|
 			unless line.start_with? "#"
 			  	g = line.split "\t"
 			  	
@@ -58,10 +60,10 @@ namespace :import do
 		
 		puts "-- associating states.. "
 		lookUpState = {}
-		`rm /home/orangeman/geonames/admin1Codes.txt`
+		`rm #{temppath}/admin1Codes.txt`
 		`wget http://download.geonames.org/export/dump/admin1Codes.txt \
-							-O ~orangeman/geonames/admin1Codes.txt`
-		File.open("/home/orangeman/geonames/admin1Codes.txt", "r").each do |line|
+							-O #{temppath}/admin1Codes.txt`
+		File.open("#{temppath}/admin1Codes.txt", "r").each do |line|
 			s = line.split "\t"
 			if s[0].start_with? country
 				translations = (Translation.find :all, :conditions => {:name => s[1].strip}
@@ -102,12 +104,12 @@ namespace :geonames do
   desc "download countries and import to postgis"
   task :countries => :environment do
 	
-		`rm /home/orangeman/geonames/countryInfo.txt`
+		`rm #{temppath}/countryInfo.txt`
 		`wget http://download.geonames.org/export/dump/countryInfo.txt \
-							-O ~orangeman/geonames/countryInfo.txt`
+							-O #{temppath}/countryInfo.txt`
 	
 		puts "-- importing countries.. "
-		File.open("/home/orangeman/geonames/countryInfo.txt", "r").each do |line|
+		File.open("#{temppath}/countryInfo.txt", "r").each do |line|
 			unless line.start_with? "#"
 			  	c = line.split "\t"
 		  		m = Country.new :iso => c[0], 
@@ -132,13 +134,13 @@ namespace :geonames do
   desc "download altenate names and import to postgis"
   task :translations => :environment do
 		
-		`rm /home/orangeman/geonames/alternateNames.*`
+		`rm #{temppath}/alternateNames.*`
 		`wget http://download.geonames.org/export/dump/alternateNames.zip \
-								-O ~orangeman/geonames/alternateNames.zip`
-		`unzip -d ~orangeman/geonames/ ~orangeman/geonames/alternateNames.zip`
+								-O #{temppath}/alternateNames.zip`
+		`unzip -d #{temppath}/ #{temppath}/alternateNames.zip`
 	
 		puts "-- importing translations.. "
-		File.open("/home/orangeman/geonames/alternateNames.txt", "r").each do |line|
+		File.open("#{temppath}/alternateNames.txt", "r").each do |line|
 			unless line.start_with? "#"
 				t = line.split "\t"
 			  	Translation.create :id => t[0],
@@ -157,13 +159,13 @@ namespace :geonames do
   desc "download top 15k cities and import to postgis"
   task :cities => :environment do
 		
-		`rm /home/orangeman/geonames/cities15000.*`
+		`rm #{temppath}/cities15000.*`
 		`wget http://download.geonames.org/export/dump/cities15000.zip \
-								-O ~orangeman/geonames/cities15000.zip`
-		`unzip -d ~orangeman/geonames/ ~orangeman/geonames/cities15000.zip`
+								-O #{temppath}/cities15000.zip`
+		`unzip -d #{temppath}/ #{temppath}/cities15000.zip`
 	
 		puts "-- importing top 1500 cities.. "
-		File.open("/home/orangeman/geonames/cities15000.txt", "r").each do |line|
+		File.open("#{temppath}/cities15000.txt", "r").each do |line|
 			unless line.start_with? "#"
 			  	g = line.split "\t"
 			  	n = City.new
