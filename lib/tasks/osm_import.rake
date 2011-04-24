@@ -12,18 +12,71 @@ ZUG = 2**4
 BOOT = 2**5
 STREET = 2**6
 
-postgis_database_path="#{RAILS_ROOT}/db/pg-8.4-postgis-1.5"
-osmosis_database_path="#{RAILS_ROOT}/db/osmosis-0.35"
-osmosis_binary="/mnt/may-old-root/home/orangeman/osm/osmosis-0.35/bin/osmosis"
-downloadpath="#{RAILS_ROOT}/tmp/"
-
 osm_db = "osm"
 osm_user = "osm"
 
-
 namespace :import do
-namespace :osm do
+  namespace :osm do
 
+	def get_osm_db(dbname)
+		db_config = YAML.load_file("#{RAILS_ROOT}/config/database.yml")
+		begin
+	  	conn = PGconn.connect :dbname => dbname, 
+				 										:user => db_config["master"]["username"],
+                          	:password => db_config["master"]["password"],
+														:host => db_config["master"]["hostname"]
+			puts "database #{dbname} exists"
+			
+    rescue PGError => e  
+			starttime = Time.now
+			puts "preparing temporary osm database..."
+			db_master_user = db_config["master"]["username"]
+			db_conn_parameters = "-U #{db_master_user} -h #{db_config["production"]["hostname"]}"
+			auth = "PGPASSWORD='#{db_config["master"]["password"]}'"
+			cmd = "#{auth} createdb #{db_conn_parameters} #{dbname}"
+			%x[#{cmd}]
+      puts "temporary database #{dbname} created."
+
+      postgis_path="#{RAILS_ROOT}/db/pg-8.4-postgis-1.5"
+      osmosis_path="#{RAILS_ROOT}/db/osmosis-0.35"
+      download_path="#{RAILS_ROOT}/tmp/geonames"
+#			osmosis_binary="/home/teleportr/osmosis-0.39/bin/osmosis"
+      osmosis_binary="/mnt/may-old-root/home/orangeman/osm/osmosis-0.35/bin/osmosis"
+
+	    cmd = "#{auth} createlang #{db_conn_parameters} plpgsql #{dbname}"
+			%x[#{cmd}]
+			psql = "#{auth} psql #{db_conn_parameters} -d #{dbname} -c client_min_messages=WARNING "
+			%x[#{psql} -f #{postgis_path}/postgis.sql]
+			%x[#{psql} -f #{postgis_path}/spatial_ref_sys.sql]
+#			%x[#{psql} -f /usr/share/postgresql/8.4/contrib/hstore.sql]
+			%x[#{psql} -f #{osmosis_path}/pgsql_simple_schema_0.6.sql]
+			puts "database gisified."
+			state = "bremen" # for test reason
+			`wget http://download.geofabrik.de/osm/europe/germany/#{state}.osm.bz2 \
+						-O #{download_path}/#{state}.osm.bz2`
+			puts "osmosis running..."
+  		%x[#{osmosis_binary} \
+				    --read-xml #{download_path}/#{state}.osm.bz2 \
+    				--write-pgsql database=#{dbname} user=#{db_config["master"]["username"]} password=#{db_config["master"]["password"]}]
+			
+			conn = PGconn.connect :dbname => dbname, 
+				 										:user => db_config["master"]["username"],
+                          	:password => db_config["master"]["password"],
+														:host => db_config["master"]["hostname"]
+
+			puts "done. (#{(Time.now - starttime )/60000}min)"
+		end
+		conn	
+	end
+
+
+
+
+  desc "going to get all memory away"
+  task :test => :environment do
+		puts "going to get all memory away"
+		puts (get_osm_db "telefoo")
+	end  
 
   desc "download osm data and import to postgis (streets+stations)"
   task :all => [:streets, :stations]
@@ -33,29 +86,14 @@ namespace :osm do
   task :streets => :environment do
   
 	puts
-  	state = ENV["state"]
-  	if not state
-  		puts "WHICH state should be imported?"
-  		puts
-  		break
-  	end
+ # 	state = ENV["state"]
+ # 	if not state
+ # 		puts "WHICH state should be imported?"
+ # 		puts
+ # 		break
+ # 	end
   	
-	`dropdb osm_#{state} -U osm`
-	`createdb -U osm osm_#{state}`
-	`createlang -U osm plpgsql osm_#{state}`
-	`psql -U osm -d osm_#{state} -f #{postgis_path}/postgis.sql`
-	`psql -U osm -d osm_#{state} -f #{postgis_path}/spatial_ref_sys.sql`
-	`psql -U osm -d osm_#{state} -f #{osmosis_database_path}/pgsql_simple_schema_0.6.sql`
-	
-	`wget http://download.geofabrik.de/osm/europe/germany/#{state}.osm.bz2 \
-		-O #{downloadpath}/#{state}.osm.bz2`
-	`#{osmosis_binary} \
-		--read-xml #{downloadpath}/#{state}.osm.bz2 \
-		--write-pgsql user="osm" database="osm_#{state}" password="osm"`
-	
-	
-	
-	conn = PGconn.open :dbname => "osm_#{state}", :user => "osm", :password => "osm"
+  conn = get_osm_db("telefoo")
 	puts
 	
 	puts "-- query osm database for streets.."
@@ -70,7 +108,7 @@ SQL
 	
 	puts "-- importing streets.."
 	
-  	state = State.find :first, :conditions => "name iLIKE '%"+state.gsub("ue","ü")+"' AND state_id is null"
+  	state = State.find :first, :conditions => "name iLIKE '%"+"bremen".gsub("ue","ü")+"' AND state_id is null"
   	puts state.name
   	places = []
 	p = nil
@@ -115,12 +153,12 @@ SQL
   task :stations => :environment do
   
   	puts
-  	state = ENV["state"]
-  	if not state
-  		puts "WHICH state should be imported?"
-  		puts
-  		break
-  	end
+ # 	state = ENV["state"]
+ # 	if not state
+ # 		puts "WHICH state should be imported?"
+ # 		puts
+ # 		break
+ # 	end
 	
 	puts
 	puts "-- query osm database for stops.."
@@ -144,12 +182,13 @@ SQL
 	   	)
 		ORDER BY node_id, k='name' DESC
 SQL
-	conn = PGconn.open :dbname => "osm_#{state}", :user => "osm", :password => "osm"
+  
+	conn = get_osm_db("telefoo")
 	tags = conn.exec query
 	puts "   -> Done."
 
 	puts "-- checking modes.."
-  	state = State.find :first, :conditions => "name iLIKE '%"+state.gsub("ue","ü")+"' AND state_id is null"
+  	state = State.find :first, :conditions => "name iLIKE '%"+"bremen".gsub("ue","ü")+"' AND state_id is null"
   	puts state.name
   	places = []
 	p = Place.new
