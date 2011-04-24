@@ -3,7 +3,7 @@ require "pg"
 require "sqlite3"
 
 temppath = "#{RAILS_ROOT}/tmp/geonames"
-
+`mkdir #{temppath}`
 namespace :import do
   
   desc "download and import states/cities of one country"
